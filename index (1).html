@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#4f46e5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="ExamBox">
+<meta name="description" content="Har exam ka mock test — ₹9/month">
+<title>ExamBox — Mock Tests ₹9/month</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:'Segoe UI',system-ui,-apple-system,sans-serif}
+:root{--primary:#4f46e5;--primary-dark:#3730a3;--accent:#f59e0b;--green:#10b981;--red:#ef4444;--dark:#0f172a;--light:#f8fafc;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#94a3b8}
+html,body{height:100%}
+body{background:var(--light);color:var(--text);overflow-x:hidden}
+.app-shell{max-width:480px;margin:0 auto;min-height:100vh;background:var(--light);position:relative}
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;display:flex;justify-content:space-around;padding:8px 0 12px;box-shadow:0 -2px 12px rgba(0,0,0,.08);z-index:50}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:6px 14px;border:none;background:none;font-size:.68rem;color:var(--muted);font-weight:500;transition:color .2s}
+.nav-item.active{color:var(--primary)}
+.nav-item .icon{font-size:1.3rem}
+.page{display:none;padding:16px 16px 90px;animation:fadeIn .3s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.app-header{background:linear-gradient(135deg,#4f46e5,#3730a3);color:#fff;padding:20px 16px 28px;border-radius:0 0 24px 24px;margin-bottom:16px}
+.app-header .logo{font-size:1.4rem;font-weight:800;display:flex;align-items:center;gap:8px}
+.app-header .logo span{background:var(--accent);color:var(--dark);padding:2px 8px;border-radius:6px;font-size:1.1rem}
+.app-header .tagline{font-size:.85rem;color:#c7d2fe;margin-top:6px}
+.price-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);padding:6px 16px;border-radius:50px;margin-top:12px;font-size:.82rem}
+.price-pill .rs{color:var(--accent);font-weight:700;font-size:1rem}
+.search-wrap{position:relative;margin-bottom:16px}
+.search-wrap input{width:100%;padding:12px 16px 12px 42px;border:2px solid var(--border);border-radius:12px;font-size:.95rem;outline:none;background:#fff;transition:border-color .2s}
+.search-wrap input:focus{border-color:var(--primary)}
+.search-wrap .si{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:1.1rem}
+.sec-title{font-size:1.05rem;font-weight:700;margin-bottom:12px;color:var(--dark);display:flex;justify-content:space-between;align-items:center}
+.sec-title .see-all{font-size:.78rem;color:var(--primary);font-weight:600;cursor:pointer}
+.exam-list{display:flex;flex-direction:column;gap:12px}
+.exam-card{background:var(--card);border-radius:14px;padding:16px;box-shadow:0 1px 8px rgba(0,0,0,.05);border:1px solid var(--border);cursor:pointer;transition:transform .15s,box-shadow .15s}
+.exam-card:active{transform:scale(.98)}
+.exam-card .top{display:flex;justify-content:space-between;align-items:start;margin-bottom:8px}
+.exam-card .name{font-size:1.05rem;font-weight:700;color:var(--dark)}
+.exam-card .badge{font-size:.62rem;font-weight:700;padding:3px 8px;border-radius:20px}
+.badge.hot{background:#fee2e2;color:#991b1b}
+.badge.popular{background:#fef3c7;color:#92400e}
+.badge.new{background:#d1fae5;color:#065f46}
+.exam-card .info{font-size:.78rem;color:var(--muted);margin-bottom:10px}
+.exam-card .meta{display:flex;gap:16px;font-size:.78rem;color:var(--text);margin-bottom:12px}
+.exam-card .meta span{display:flex;align-items:center;gap:4px}
+.exam-card .bottom{display:flex;justify-content:space-between;align-items:center}
+.exam-card .price{font-size:1.1rem;font-weight:800;color:var(--primary)}
+.exam-card .price .per{font-size:.75rem;font-weight:400;color:var(--muted)}
+.btn-sub{background:var(--primary);color:#fff;padding:8px 20px;border-radius:10px;border:none;font-weight:600;font-size:.85rem;cursor:pointer}
+.btn-sub.free{background:var(--green)}
+.lb-card{background:#fff;border-radius:14px;padding:16px;margin-bottom:12px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 8px rgba(0,0,0,.05);border:1px solid var(--border)}
+.lb-rank{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;flex-shrink:0}
+.lb-rank.gold{background:#fef3c7;color:#92400e}
+.lb-rank.silver{background:#e2e8f0;color:#475569}
+.lb-rank.bronze{background:#fed7aa;color:#9a3412}
+.lb-rank.normal{background:#ede9fe;color:#5b21b6}
+.lb-info{flex:1}
+.lb-info .nm{font-weight:600;font-size:.9rem}
+.lb-info .sc{font-size:.78rem;color:var(--muted)}
+.lb-score{font-weight:800;color:var(--primary);font-size:1rem}
+.profile-card{background:#fff;border-radius:14px;padding:20px;text-align:center;box-shadow:0 1px 8px rgba(0,0,0,.05);border:1px solid var(--border);margin-bottom:16px}
+.profile-avatar{width:64px;height:64px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:800;margin:0 auto 12px}
+.profile-name{font-size:1.1rem;font-weight:700}
+.profile-exam{font-size:.82rem;color:var(--muted);margin-top:4px}
+.stats-row{display:flex;justify-content:space-around;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+.stat-item{text-align:center}
+.stat-item .val{font-size:1.3rem;font-weight:800;color:var(--primary)}
+.stat-item .lbl{font-size:.72rem;color:var(--muted)}
+.test-header{background:#fff;border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 1px 8px rgba(0,0,0,.05);border:1px solid var(--border)}
+.test-header .tname{font-size:1.1rem;font-weight:700}
+.test-header .tinfo{display:flex;gap:16px;margin-top:8px;font-size:.8rem;color:var(--muted)}
+.test-header .tinfo span{display:flex;align-items:center;gap:4px}
+.timer-bar{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.timer{font-size:1.3rem;font-weight:800;color:var(--primary);font-variant-numeric:tabular-nums}
+.timer.warn{color:var(--red)}
+.q-counter{font-size:.82rem;color:var(--muted)}
+.question-card{background:#fff;border-radius:14px;padding:20px;margin-bottom:16px;box-shadow:0 1px 8px rgba(0,0,0,.05);border:1px solid var(--border)}
+.q-number{font-size:.75rem;color:var(--primary);font-weight:700;margin-bottom:8px}
+.q-text{font-size:1rem;line-height:1.6;color:var(--dark);margin-bottom:16px}
+.options{display:flex;flex-direction:column;gap:10px}
+.option{display:flex;align-items:center;gap:12px;padding:14px;border:2px solid var(--border);border-radius:10px;cursor:pointer;transition:border-color .2s,background .2s;font-size:.92rem}
+.option:active{transform:scale(.99)}
+.option.selected{border-color:var(--primary);background:#ede9fe}
+.option.correct{border-color:var(--green);background:#d1fae5}
+.option.wrong{border-color:var(--red);background:#fee2e2}
+.option .opt-letter{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.82rem;flex-shrink:0}
+.option.selected .opt-letter{border-color:var(--primary);background:var(--primary);color:#fff}
+.option.correct .opt-letter{border-color:var(--green);background:var(--green);color:#fff}
+.option.wrong .opt-letter{border-color:var(--red);background:var(--red);color:#fff}
+.test-nav{display:flex;justify-content:space-between;gap:12px;margin-bottom:20px}
+.btn-nav{flex:1;padding:14px;border-radius:10px;border:1px solid var(--border);background:#fff;font-weight:600;font-size:.9rem;cursor:pointer;color:var(--text)}
+.btn-nav:active{background:var(--light)}
+.btn-nav:disabled{opacity:.4}
+.btn-next{background:var(--primary);color:#fff;border:none}
+.q-palette{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:20px}
+.q-pellet{aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:600;cursor:pointer;border:2px solid var(--border);background:#fff}
+.q-pellet.answered{background:var(--green);color:#fff;border-color:var(--green)}
+.q-pellet.current{border-color:var(--primary);border-width:2px}
+.result-card{background:#fff;border-radius:14px;padding:24px;text-align:center;box-shadow:0 1px 8px rgba(0,0,0,.05);border:1px solid var(--border)}
+.result-score{font-size:3rem;font-weight:800;color:var(--primary);margin:8px 0}
+.result-detail{display:flex;justify-content:space-around;margin:20px 0;padding:16px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.rd-item{text-align:center}
+.rd-item .val{font-size:1.2rem;font-weight:800}
+.rd-item .lbl{font-size:.72rem;color:var(--muted)}
+.rd-item .val.correct{color:var(--green)}
+.rd-item .val.wrong{color:var(--red)}
+.result-rank{background:linear-gradient(135deg,#4f46e5,#3730a3);color:#fff;padding:16px;border-radius:12px;margin-top:16px}
+.result-rank .rk{font-size:1.6rem;font-weight:800}
+.result-rank .lb{font-size:.78rem;color:#c7d2fe}
+.btn-full{width:100%;padding:16px;border-radius:12px;border:none;font-weight:700;font-size:1rem;cursor:pointer;margin-top:16px}
+.btn-primary{background:var(--primary);color:#fff}
+.solution-card{background:#fff;border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 1px 8px rgba(0,0,0,.05);border:1px solid var(--border)}
+.solution-card .sq{font-size:.88rem;font-weight:600;margin-bottom:8px;color:var(--dark)}
+.solution-card .sa{font-size:.82rem;color:var(--green);font-weight:600;margin-bottom:6px}
+.solution-card .sexp{font-size:.82rem;color:var(--muted);line-height:1.5}
+.paywall-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:200;display:none;align-items:flex-end;justify-content:center}
+.paywall-overlay.active{display:flex}
+.paywall-sheet{background:#fff;width:100%;max-width:480px;border-radius:24px 24px 0 0;padding:28px 24px 36px;animation:slideUp .3s ease;position:relative}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.paywall-sheet h3{font-size:1.3rem;text-align:center;margin-bottom:8px}
+.paywall-sheet .sub{text-align:center;color:var(--muted);font-size:.85rem;margin-bottom:24px}
+.plan-card{border:2px solid var(--primary);border-radius:14px;padding:16px;margin-bottom:12px;background:#ede9fe;position:relative}
+.plan-card .rec{position:absolute;top:-10px;right:16px;background:var(--accent);color:var(--dark);padding:3px 12px;border-radius:20px;font-size:.68rem;font-weight:700}
+.plan-card .pn{font-weight:700;font-size:.95rem}
+.plan-card .pp{font-size:1.4rem;font-weight:800;color:var(--primary)}
+.plan-card .pp .mo{font-size:.85rem;font-weight:400;color:var(--muted)}
+.plan-row{display:flex;gap:12px;margin-bottom:20px}
+.plan-mini{flex:1;border:2px solid var(--border);border-radius:14px;padding:14px;text-align:center;cursor:pointer}
+.plan-mini .pn{font-size:.82rem;font-weight:600;margin-bottom:4px}
+.plan-mini .pp{font-size:1.1rem;font-weight:800}
+.plan-mini .pp .mo{font-size:.72rem;color:var(--muted)}
+.pay-btn{width:100%;padding:16px;background:var(--primary);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer}
+.pay-btn:active{background:var(--primary-dark)}
+.pay-note{text-align:center;font-size:.75rem;color:var(--muted);margin-top:12px}
+.close-sheet{position:absolute;top:16px;right:16px;font-size:1.4rem;cursor:pointer;color:var(--muted);background:none;border:none}
+.login-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#4f46e5,#3730a3);z-index:300;display:flex;align-items:center;justify-content:center;padding:24px}
+.login-box{text-align:center;color:#fff;width:100%;max-width:320px}
+.login-box .big-logo{font-size:3rem;margin-bottom:8px}
+.login-box h1{font-size:1.6rem;margin-bottom:8px}
+.login-box h1 span{background:var(--accent);color:var(--dark);padding:2px 8px;border-radius:6px}
+.login-box p{color:#c7d2fe;font-size:.9rem;margin-bottom:24px}
+.login-box input{width:100%;padding:14px;border-radius:10px;border:none;font-size:1rem;margin-bottom:10px;outline:none}
+.login-box input:focus{box-shadow:0 0 0 3px rgba(245,158,11,.4)}
+.login-btn{width:100%;padding:16px;background:var(--accent);color:var(--dark);border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;margin-bottom:8px}
+.otp-btn{background:rgba(255,255,255,.15);color:#fff}
+.login-note{font-size:.75rem;color:#a5b4fc;margin-top:16px}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--dark);color:#fff;padding:10px 20px;border-radius:30px;font-size:.85rem;z-index:500;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.show{opacity:1}
+@media(min-width:481px){.app-shell{box-shadow:0 0 40px rgba(0,0,0,.1)}}
+</style>
+</head>
+<body>
+
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <div class="big-logo">📚</div>
+    <h1>Exam<span>Box</span></h1>
+    <p>Har exam ka mock test<br>सिर्फ ₹9/महीना</p>
+    <input type="tel" placeholder="📱 Mobile Number" id="loginPhone" maxlength="10">
+    <button class="login-btn" onclick="sendOTP()">Get OTP</button>
+    <div id="otpSection" style="display:none;">
+      <input type="text" placeholder="Enter 4-digit OTP" id="loginOTP" maxlength="4" style="text-align:center;letter-spacing:8px;font-size:1.2rem;">
+      <button class="login-btn" onclick="verifyOTP()">Verify & Login</button>
+    </div>
+    <button class="login-btn otp-btn" onclick="guestLogin()">Guest में देखें →</button>
+    <p class="login-note">Demo OTP: 1234 · Guest login free tests access कर सकता है</p>
+  </div>
+</div>
+
+<div class="app-shell">
+  <div class="page active" id="homePage">
+    <div class="app-header">
+      <div class="logo">📚 Exam<span>Box</span></div>
+      <div class="tagline">Mock Tests · ₹9/month · Cancel anytime</div>
+      <div class="price-pill"><span>₹9</span> / month per exam</div>
+    </div>
+    <div class="search-wrap">
+      <span class="si">🔍</span>
+      <input type="text" placeholder="Exam खोजें... (SSC, UPSC, NEET)" oninput="filterExams(this.value)">
+    </div>
+    <div class="sec-title">🔥 Trending Mock Tests</div>
+    <div class="exam-list" id="examList"></div>
+  </div>
+
+  <div class="page" id="lbPage">
+    <div class="app-header" style="margin-bottom:16px;">
+      <div class="logo">🏆 Leaderboard</div>
+      <div class="tagline">All India Ranking</div>
+    </div>
+    <div class="sec-title"><span>SSC GD — Top 20</span><span class="see-all" style="color:var(--muted)">This Week</span></div>
+    <div id="lbList"></div>
+  </div>
+
+  <div class="page" id="profilePage">
+    <div class="app-header" style="margin-bottom:16px;"><div class="logo">👤 Profile</div></div>
+    <div class="profile-card">
+      <div class="profile-avatar" id="profAvatar">P</div>
+      <div class="profile-name" id="profName">Prince Kumar</div>
+      <div class="profile-exam">SSC GD Aspirant</div>
+      <div class="stats-row">
+        <div class="stat-item"><div class="val" id="stTests">3</div><div class="lbl">Tests Given</div></div>
+        <div class="stat-item"><div class="val" id="stAvg">72%</div><div class="lbl">Avg Score</div></div>
+        <div class="stat-item"><div class="val" id="stRank">#142</div><div class="lbl">Rank</div></div>
+      </div>
+    </div>
+    <div class="sec-title">My Subscriptions</div>
+    <div class="exam-card">
+      <div class="top"><div class="name">SSC GD Constable</div><span class="badge popular">Active</span></div>
+      <div class="info">Expires: 30 Sep 2026</div>
+      <div class="bottom"><div class="price">₹9 <span class="per">/month</span></div><button class="btn-sub" style="background:var(--green)">Renew</button></div>
+    </div>
+    <div class="sec-title" style="margin-top:16px;">Recent Tests</div>
+    <div id="recentTests"></div>
+  </div>
+
+  <div class="page" id="testPage">
+    <div class="test-header">
+      <div class="tname" id="testName">SSC GD Mock Test 1</div>
+      <div class="tinfo"><span>📝 15 Questions</span><span>⏱ 15 min</span><span>✅ +2 / ❌ -0.5</span></div>
+      <div class="timer-bar"><div class="q-counter"><span id="qCurrent">1</span> / <span id="qTotal">15</span></div><div class="timer" id="timer">15:00</div></div>
+    </div>
+    <div id="questionArea"></div>
+    <div class="test-nav"><button class="btn-nav" id="prevBtn" onclick="prevQuestion()">← Prev</button><button class="btn-nav btn-next" id="nextBtn" onclick="nextQuestion()">Next →</button></div>
+    <div class="sec-title">Question Palette</div>
+    <div class="q-palette" id="qPalette"></div>
+    <button class="btn-full btn-primary" onclick="submitTest()" style="background:var(--green);">✅ Submit Test</button>
+  </div>
+
+  <div class="page" id="resultPage">
+    <div class="result-card">
+      <div style="font-size:2.5rem;">🎉</div>
+      <div style="font-size:.9rem;color:var(--muted);margin-top:8px;">Test Complete!</div>
+      <div class="result-score" id="resScore">0/30</div>
+      <div style="font-size:.85rem;color:var(--muted);" id="resPercent">0%</div>
+      <div class="result-detail">
+        <div class="rd-item"><div class="val correct" id="resCorrect">0</div><div class="lbl">Correct</div></div>
+        <div class="rd-item"><div class="val wrong" id="resWrong">0</div><div class="lbl">Wrong</div></div>
+        <div class="rd-item"><div class="val" id="resSkipped">0</div><div class="lbl">Skipped</div></div>
+      </div>
+      <div class="result-rank"><div class="lb">All India Rank</div><div class="rk" id="resRank">#0</div></div>
+      <button class="btn-full btn-primary" onclick="showSolutions()" style="margin-top:16px;">📖 View Solutions</button>
+      <button class="btn-full btn-nav" onclick="goHome()" style="margin-top:8px;">← Back to Home</button>
+    </div>
+    <div id="solutionList" style="display:none;margin-top:16px;"></div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="nav-item active" onclick="switchPage('home')" data-page="home"><span class="icon">🏠</span>Home</button>
+    <button class="nav-item" onclick="switchPage('lb')" data-page="lb"><span class="icon">🏆</span>Ranking</button>
+    <button class="nav-item" onclick="switchPage('profile')" data-page="profile"><span class="icon">👤</span>Profile</button>
+  </div>
+</div>
+
+<div class="paywall-overlay" id="paywall">
+  <div class="paywall-sheet">
+    <button class="close-sheet" onclick="closePaywall()">✕</button>
+    <h3>🔑 Unlock Mock Tests</h3>
+    <p class="sub">SSC GD — Unlimited Mock Tests</p>
+    <div class="plan-row">
+      <div class="plan-mini" onclick="selectPlan(this)"><div class="pn">Monthly</div><div class="pp">₹9<span class="mo">/mo</span></div></div>
+      <div class="plan-mini" onclick="selectPlan(this)"><div class="pn">3 Months</div><div class="pp">₹49<span class="mo">/3mo</span></div></div>
+      <div class="plan-mini" onclick="selectPlan(this)"><div class="pn">Yearly</div><div class="pp">₹99<span class="mo">/yr</span></div></div>
+    </div>
+    <div class="plan-card">
+      <div class="rec">RECOMMENDED</div>
+      <div class="pn">📋 Monthly Plan</div>
+      <div class="pp">₹9 <span class="mo">/ month</span></div>
+      <div style="font-size:.82rem;color:var(--muted);margin-top:6px;">✓ Unlimited mock tests<br>✓ All India ranking<br>✓ Detailed solutions<br>✓ Cancel anytime</div>
+    </div>
+    <button class="pay-btn" onclick="processPayment()">Pay ₹9 with UPI</button>
+    <p class="pay-note">🔒 Secure payment via Razorpay<br>Demo mode — no actual charge</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== EMBEDDED MANIFEST (as blob URL) =====
+const manifestData = {
+  "name":"ExamBox — Mock Tests ₹9/month",
+  "short_name":"ExamBox",
+  "display":"standalone",
+  "start_url":"./",
+  "background_color":"#0f172a",
+  "theme_color":"#4f46e5",
+  "description":"Har exam ka mock test — ₹9/month",
+  "icons":[{
+    "src":"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='32' fill='%234f46e5'/%3E%3Ctext x='50%25' y='50%25' font-size='96' text-anchor='middle' dy='.35em' fill='white' font-family='Arial' font-weight='bold'%3E📚%3C/text%3E%3C/svg%3E",
+    "type":"image/svg+xml","sizes":"192x192","purpose":"any maskable"
+  }]
+};
+const manifestBlob = new Blob([JSON.stringify(manifestData)], {type:'application/json'});
+const manifestURL = URL.createObjectURL(manifestBlob);
+const link = document.createElement('link');
+link.rel = 'manifest';
+link.href = manifestURL;
+document.head.appendChild(link);
+
+// ===== EMBEDDED SERVICE WORKER (as blob URL) =====
+const swCode = `
+const CACHE_NAME='exambox-v1';
+const ASSETS=['./'];
+self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(ASSETS)).catch(()=>{}));self.skipWaiting()});
+self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(n=>n!==CACHE_NAME).map(n=>caches.delete(n)))));self.clients.claim()});
+self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.match(e.request).then(c=>c||fetch(e.request).then(r=>{if(r.ok&&e.request.url.startsWith(self.location.origin)){const cl=r.clone();caches.open(CACHE_NAME).then(ca=>ca.put(e.request,cl))}return r}).catch(()=>c)))});
+`;
+if('serviceWorker' in navigator){
+  const swBlob = new Blob([swCode], {type:'application/javascript'});
+  const swURL = URL.createObjectURL(swBlob);
+  navigator.serviceWorker.register(swURL).catch(()=>{});
+}
+
+// ===== QUESTIONS =====
+const QUESTIONS=[
+{q:"भारत की सबसे लंबी नदी कौन सी है?",options:["गंगा","यमुना","ब्रह्मपुत्र","गोदावरी"],correct:0,exp:"गंगा नदी भारत की सबसे लंबी नदी है, जिसकी कुल लंबाई लगभग 2525 किमी है। यह गंगोत्री हिमनद से निकलती है।"},
+{q:"Who is known as the 'Father of the Nation' in India?",options:["Jawaharlal Nehru","Mahatma Gandhi","Sardar Patel","B.R. Ambedkar"],correct:1,exp:"Mahatma Gandhi is called the Father of the Nation for his role in India's independence movement through non-violent means."},
+{q:"भारत का संविधान कब लागू हुआ?",options:["15 अगस्त 1947","26 जनवरी 1950","26 नवंबर 1949","2 अक्टूबर 1950"],correct:1,exp:"भारत का संविधान 26 जनवरी 1950 को लागू हुआ। इसी दिन को गणतंत्र दिवस के रूप में मनाया जाता है।"},
+{q:"If 15% of a number is 45, what is the number?",options:["250","300","350","200"],correct:1,exp:"15% of x = 45 → (15/100)×x = 45 → x = 45×100/15 = 300."},
+{q:"Find the odd one out:",options:["Tiger","Lion","Elephant","Leopard"],correct:2,exp:"Tiger, Lion, and Leopard are from the cat family (Panthera). Elephant is from a different family."},
+{q:"भारत में कितने राज्य हैं?",options:["27","28","29","30"],correct:1,exp:"भारत में 28 राज्य और 8 केंद्र शासित प्रदेश हैं।"},
+{q:"The chemical symbol for Gold is:",options:["Go","Gd","Au","Ag"],correct:2,exp:"Gold का रासायनिक प्रतीक 'Au' है, जो लैटिन शब्द 'Aurum' से आया है।"},
+{q:"एक रेलगाड़ी 60 किमी/घंटा की गति से चल रही है। 180 किमी की दूरी कितने समय में तय करेगी?",options:["2 घंटे","3 घंटे","4 घंटे","5 घंटे"],correct:1,exp:"समय = दूरी / गति = 180 / 60 = 3 घंटे।"},
+{q:"Which planet is known as the 'Red Planet'?",options:["Venus","Mars","Jupiter","Saturn"],correct:1,exp:"Mars is called the Red Planet because its surface has iron oxide (rust), giving it a reddish appearance."},
+{q:"महात्मा गांधी का पूरा नाम क्या था?",options:["मोहनदास करमचंद गांधी","मोहन कृष्ण गांधी","मोहन लाल गांधी","मोहन दास गांधी"],correct:0,exp:"महात्मा गांधी का पूरा नाम मोहनदास करमचंद गांधी था। उनका जन्म 2 अक्टूबर 1869 को पोरबंदर में हुआ था।"},
+{q:"A shopkeeper sells an item for ₹120, gaining 20%. What was the cost price?",options:["₹100","₹96","₹108","₹110"],correct:0,exp:"SP = CP × 1.20 → 120 = CP × 1.20 → CP = ₹100."},
+{q:"Which is the largest organ of the human body?",options:["Liver","Brain","Skin","Heart"],correct:2,exp:"Skin is the largest organ of the human body. It protects, regulates temperature, and allows sensation."},
+{q:"भारत का राष्ट्रीय पक्षी कौन सा है?",options:["कौआ","मोर","तोता","कबूतर"],correct:1,exp:"भारत का राष्ट्रीय पक्षी मोर (Peacock) है। इसे 1963 में राष्ट्रीय पक्षी घोषित किया गया।"},
+{q:"What is the value of 7 × 8 + 6 ÷ 2 − 5?",options:["54","56","58","55"],correct:0,exp:"BODMAS: 7×8=56, 6÷2=3, so 56+3−5 = 54."},
+{q:"Who wrote the national anthem of India?",options:["Bankim Chandra","Rabindranath Tagore","Sarojini Naidu","Iqbal"],correct:1,exp:"Rabindranath Tagore wrote 'Jana Gana Mana', adopted as India's national anthem on 24 January 1950."}
+];
+
+const EXAMS=[
+{id:1,name:"SSC GD Constable",badge:"hot",badgeText:"🔥 Trending",tests:12,questions:1500,price:"₹9",free:true,subscribed:true},
+{id:2,name:"SSC CGL Tier-1",badge:"popular",badgeText:"⭐ Popular",tests:10,questions:1200,price:"₹9",free:false,subscribed:false},
+{id:3,name:"RRB NTPC",badge:"hot",badgeText:"🔥 Trending",tests:8,questions:900,price:"₹9",free:false,subscribed:false},
+{id:4,name:"UPSC Prelims GS",badge:"new",badgeText:"🆕 New",tests:6,questions:800,price:"₹9",free:false,subscribed:false},
+{id:5,name:"NEET 2026",badge:"new",badgeText:"🆕 New",tests:10,questions:1500,price:"₹9",free:false,subscribed:false},
+{id:6,name:"BPSC Prelims",badge:"popular",badgeText:"⭐ Popular",tests:5,questions:600,price:"₹9",free:true,subscribed:false}
+];
+
+const LEADERBOARD=[
+{name:"Amit Sharma",score:28,rank:1},{name:"Priya Patel",score:27,rank:2},
+{name:"Rahul Verma",score:26,rank:3},{name:"Sneha Gupta",score:25,rank:4},
+{name:"Vikash Yadav",score:24,rank:5},{name:"Anjali Singh",score:23,rank:6},
+{name:"Deepak Kumar",score:22,rank:7},{name:"Pooja Rai",score:21,rank:8},
+{name:"Rohit Mishra",score:20,rank:9},{name:"Kavita Nair",score:19,rank:10}
+];
+
+let currentUser=null;
+let testState={currentQ:0,answers:[],timerInterval:null,timeLeft:900,examId:null};
+
+function sendOTP(){const p=document.getElementById('loginPhone').value;if(p.length!==10){showToast('10 digit number डालें');return}document.getElementById('otpSection').style.display='block';showToast('OTP भेजा गया (Demo: 1234)')}
+function verifyOTP(){const o=document.getElementById('loginOTP').value;if(o==='1234'){currentUser={name:'Prince Kumar'};document.getElementById('loginOverlay').style.display='none';showToast('Login successful! 🎉')}else{showToast('गलत OTP! Demo OTP: 1234')}}
+function guestLogin(){currentUser={name:'Guest User'};document.getElementById('loginOverlay').style.display='none';showToast('Guest mode में free tests दे सकते हैं')}
+
+function switchPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));if(p==='home')document.getElementById('homePage').classList.add('active');else if(p==='lb'){document.getElementById('lbPage').classList.add('active');renderLeaderboard()}else if(p==='profile'){document.getElementById('profilePage').classList.add('active');renderRecentTests()}document.querySelector(`.nav-item[data-page="${p}"]`).classList.add('active')}
+
+function renderExams(f=''){const l=document.getElementById('examList');const fl=EXAMS.filter(e=>e.name.toLowerCase().includes(f.toLowerCase()));l.innerHTML=fl.map(e=>`<div class="exam-card" onclick="openExam(${e.id})"><div class="top"><div class="name">${e.name}</div><span class="badge ${e.badge}">${e.badgeText}</span></div><div class="info">Complete Mock Test Box</div><div class="meta"><span>📝 ${e.tests} Tests</span><span>❓ ${e.questions} Questions</span></div><div class="bottom"><div class="price">${e.free?'FREE':e.price} <span class="per">${e.free?'trial':'/month'}</span></div><button class="btn-sub ${e.free?'free':''}" onclick="event.stopPropagation();openExam(${e.id})">${e.subscribed?'Open':'Start'}</button></div></div>`).join('')}
+function filterExams(v){renderExams(v)}
+
+function openExam(id){const e=EXAMS.find(x=>x.id===id);if(e.free||e.subscribed)startTest(id);else showPaywall()}
+
+function startTest(id){testState.examId=id;testState.currentQ=0;testState.answers=new Array(QUESTIONS.length).fill(null);testState.timeLeft=900;document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('testPage').classList.add('active');document.getElementById('testName').textContent=EXAMS.find(x=>x.id===id).name+' — Mock Test 1';document.getElementById('qTotal').textContent=QUESTIONS.length;renderQuestion();renderPalette();startTimer()}
+
+function renderQuestion(){const q=QUESTIONS[testState.currentQ];const a=document.getElementById('questionArea');const L=['A','B','C','D'];a.innerHTML=`<div class="question-card"><div class="q-number">Question ${testState.currentQ+1}</div><div class="q-text">${q.q}</div><div class="options">${q.options.map((o,i)=>`<div class="option ${testState.answers[testState.currentQ]===i?'selected':''}" onclick="selectAnswer(${i})"><div class="opt-letter">${L[i]}</div><span>${o}</span></div>`).join('')}</div></div>`;document.getElementById('qCurrent').textContent=testState.currentQ+1;document.getElementById('prevBtn').disabled=testState.currentQ===0;document.getElementById('nextBtn').textContent=testState.currentQ===QUESTIONS.length-1?'Finish →':'Next →'}
+function selectAnswer(i){testState.answers[testState.currentQ]=i;renderQuestion();renderPalette()}
+function prevQuestion(){if(testState.currentQ>0){testState.currentQ--;renderQuestion();renderPalette()}}
+function nextQuestion(){if(testState.currentQ<QUESTIONS.length-1){testState.currentQ++;renderQuestion();renderPalette()}else submitTest()}
+function renderPalette(){document.getElementById('qPalette').innerHTML=QUESTIONS.map((_,i)=>`<div class="q-pellet ${testState.answers[i]!==null?'answered':''} ${i===testState.currentQ?'current':''}" onclick="jumpTo(${i})">${i+1}</div>`).join('')}
+function jumpTo(i){testState.currentQ=i;renderQuestion();renderPalette()}
+
+function startTimer(){if(testState.timerInterval)clearInterval(testState.timerInterval);updateTimer();testState.timerInterval=setInterval(()=>{testState.timeLeft--;updateTimer();if(testState.timeLeft<=0){clearInterval(testState.timerInterval);submitTest()}},1000)}
+function updateTimer(){const m=Math.floor(testState.timeLeft/60),s=testState.timeLeft%60;const t=document.getElementById('timer');t.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;if(testState.timeLeft<60)t.classList.add('warn');else t.classList.remove('warn')}
+
+function submitTest(){clearInterval(testState.timerInterval);let c=0,w=0,sk=0;testState.answers.forEach((a,i)=>{if(a===null)sk++;else if(a===QUESTIONS[i].correct)c++;else w++});const sc=c*2-w*0.5;const mx=QUESTIONS.length*2;const pct=Math.round((sc/mx)*100);document.getElementById('resScore').textContent=`${sc}/${mx}`;document.getElementById('resPercent').textContent=`${pct}% Score`;document.getElementById('resCorrect').textContent=c;document.getElementById('resWrong').textContent=w;document.getElementById('resSkipped').textContent=sk;document.getElementById('resRank').textContent='#'+Math.floor(Math.random()*500+100);document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('resultPage').classList.add('active');document.getElementById('solutionList').style.display='none'}
+
+function showSolutions(){const L=['A','B','C','D'];const list=document.getElementById('solutionList');list.innerHTML='<div class="sec-title">📖 Solutions & Explanations</div>'+QUESTIONS.map((q,i)=>{const ua=testState.answers[i];const ok=ua===q.correct;return `<div class="solution-card"><div class="sq">Q${i+1}. ${q.q}</div><div class="sa">✅ Correct: ${L[q.correct]}. ${q.options[q.correct]}</div>${ua!==null&&!ok?`<div style="font-size:.8rem;color:var(--red);margin-bottom:6px;">❌ Your answer: ${L[ua]}. ${q.options[ua]}</div>`:''}${ua===null?'<div style="font-size:.8rem;color:var(--muted);margin-bottom:6px;">⏭️ Not attempted</div>':''}<div class="sexp">💡 ${q.exp}</div></div>`}).join('');list.style.display='block';list.scrollIntoView({behavior:'smooth'})}
+
+function renderLeaderboard(){document.getElementById('lbList').innerHTML=LEADERBOARD.map((p,i)=>{let rc='normal';if(i===0)rc='gold';else if(i===1)rc='silver';else if(i===2)rc='bronze';return `<div class="lb-card"><div class="lb-rank ${rc}">${p.rank}</div><div class="lb-info"><div class="nm">${p.name}</div><div class="sc">Score: ${p.score}/30</div></div><div class="lb-score">${p.score}</div></div>`}).join('')}
+
+function renderRecentTests(){const t=[{n:"SSC GD Mock 1",s:"24/30",p:80,d:"2 Sep"},{n:"SSC GD Mock 2",s:"21/30",p:70,d:"1 Sep"},{n:"SSC GD Mock 3",s:"19/30",p:63,d:"31 Aug"}];document.getElementById('recentTests').innerHTML=t.map(x=>`<div class="exam-card" style="margin-bottom:8px;"><div class="top"><div class="name" style="font-size:.95rem;">${x.n}</div><span style="font-size:.78rem;color:var(--muted);">${x.d}</span></div><div class="bottom"><div class="price" style="font-size:.9rem;">${x.s}</div><div style="font-size:.82rem;color:${x.p>=70?'var(--green)':'var(--accent)'};">${x.p}%</div></div></div>`).join('')}
+
+function showPaywall(){document.getElementById('paywall').classList.add('active')}
+function closePaywall(){document.getElementById('paywall').classList.remove('active')}
+function selectPlan(el){document.querySelectorAll('.plan-mini').forEach(p=>{p.style.borderColor='var(--border)';p.style.background=''});el.style.borderColor='var(--primary)';el.style.background='#ede9fe'}
+function processPayment(){closePaywall();showToast('Payment successful! ✅ (Demo)');setTimeout(()=>{showToast('Mock tests unlocked! 🎉');startTest(1)},500)}
+
+function goHome(){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('homePage').classList.add('active');document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));document.querySelector('.nav-item[data-page="home"]').classList.add('active')}
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+
+renderExams();
+</script>
+</body>
+</html>
